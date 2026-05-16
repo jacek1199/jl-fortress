@@ -983,10 +983,12 @@ const AI_SYSTEM = `Jesteś osobistym asystentem biznesowym Jacka. Jacek jest prz
 
 let aiHistory = [];
 let aiTyping = false;
+let aiGreeted = false;
 
 function openAI() {
   document.getElementById('ai-panel').classList.add('open');
-  if(aiHistory.length===0) {
+  if(!aiGreeted) {
+    aiGreeted = true;
     addBotMsg('Siema Jacek! 👋 Jestem Twoim asystentem. Mogę pomóc z biznesem, finansami, motywacją — pytaj o co chcesz!');
   }
   setTimeout(()=>document.getElementById('ai-input').focus(),400);
