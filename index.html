@@ -1075,6 +1075,12 @@ async function sendAI() {
     });
     const data = await res.json();
     hideTyping();
+    if(data.error) {
+      addBotMsg('Błąd API: ' + (data.error.message || JSON.stringify(data.error)));
+      aiTyping=false;
+      document.getElementById('ai-send-btn').disabled=false;
+      return;
+    }
     const reply = data.content?.[0]?.text || 'Przepraszam, coś poszło nie tak.';
     aiHistory.push({role:'assistant',content:reply});
     addBotMsg(reply);
