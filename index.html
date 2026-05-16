@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pl">
 <head>
@@ -263,10 +264,7 @@ textarea.field{resize:none;}
     <span class="topbar-logo">JL FORTRESS</span>
     <div class="topbar-right">
       <span class="topbar-date" id="topbar-date"></span>
-      <button id="ai-topbar-btn" onclick="openAI()" style="display:none;background:#0d0d0d;border:1px solid #1e1e1e;border-radius:10px;padding:6px 10px;cursor:pointer;align-items:center;gap:6px;">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#FF6B00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-        <span style="font-size:9px;font-weight:800;color:#FF6B00;letter-spacing:1px;">AI</span>
-      </button>
+
     </div>
   </div>
 
@@ -889,193 +887,11 @@ document.getElementById('enter-btn').addEventListener('click', function() {
     document.getElementById('app').style.display='flex';
     setTopbarDate();
     renderHome();
-    document.getElementById('ai-topbar-btn').style.display='flex';
   }, 400);
 });
 
 // ── INIT ──
 setTopbarDate();
-</script>
-
-<!-- AI CHAT -->
-<style>
-.ai-panel{position:fixed;inset:0;z-index:9998;max-width:480px;margin:0 auto;display:flex;flex-direction:column;background:#000;transform:translateY(100%);transition:transform 0.35s cubic-bezier(0.22,1,0.36,1);}
-.ai-panel.open{transform:translateY(0);}
-.ai-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid #1a1a1a;flex-shrink:0;}
-.ai-header-left{display:flex;align-items:center;gap:10px;}
-.ai-avatar{width:34px;height:34px;border-radius:10px;background:#FF6B0022;border:1px solid #FF6B0044;display:flex;align-items:center;justify-content:center;}
-.ai-avatar svg{width:18px;height:18px;stroke:#FF6B00;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
-.ai-title{font-size:14px;font-weight:800;color:#fff;}
-.ai-sub{font-size:10px;color:#444;letter-spacing:1px;}
-.ai-close{background:none;border:none;color:#444;font-size:22px;cursor:pointer;padding:4px 8px;line-height:1;}
-.ai-close:hover{color:#fff;}
-.ai-messages{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px;display:flex;flex-direction:column;gap:10px;}
-.ai-msg{display:flex;flex-direction:column;max-width:85%;}
-.ai-msg.user{align-self:flex-end;align-items:flex-end;}
-.ai-msg.bot{align-self:flex-start;align-items:flex-start;}
-.ai-bubble{padding:11px 14px;border-radius:16px;font-size:14px;line-height:1.5;}
-.ai-msg.user .ai-bubble{background:#FF6B00;color:#000;font-weight:600;border-bottom-right-radius:4px;}
-.ai-msg.bot .ai-bubble{background:#111;border:1px solid #1e1e1e;color:#ddd;border-bottom-left-radius:4px;}
-.ai-msg-time{font-size:10px;color:#2a2a2a;margin-top:3px;padding:0 4px;}
-.ai-typing{display:flex;gap:4px;align-items:center;padding:12px 14px;background:#111;border:1px solid #1e1e1e;border-radius:16px;border-bottom-left-radius:4px;width:fit-content;}
-.ai-typing span{width:6px;height:6px;border-radius:50%;background:#444;animation:typingDot 1.2s infinite;}
-.ai-typing span:nth-child(2){animation-delay:0.2s;}
-.ai-typing span:nth-child(3){animation-delay:0.4s;}
-@keyframes typingDot{0%,60%,100%{transform:translateY(0);background:#444;}30%{transform:translateY(-5px);background:#FF6B00;}}
-.ai-suggestions{display:flex;gap:6px;padding:0 16px 10px;overflow-x:auto;flex-shrink:0;scrollbar-width:none;}
-.ai-suggestions::-webkit-scrollbar{display:none;}
-.ai-sug{flex-shrink:0;padding:7px 12px;background:#111;border:1px solid #1e1e1e;border-radius:10px;color:#666;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;}
-.ai-sug:active{background:#FF6B0022;border-color:#FF6B0044;color:#FF6B00;}
-.ai-input-row{display:flex;gap:8px;padding:12px 16px;border-top:1px solid #1a1a1a;flex-shrink:0;padding-bottom:calc(12px + env(safe-area-inset-bottom,0));}
-.ai-input{flex:1;background:#111;border:1px solid #252525;color:#fff;padding:11px 14px;border-radius:12px;outline:none;font-size:15px;font-family:inherit;resize:none;max-height:100px;transition:border-color 0.2s;}
-.ai-input:focus{border-color:#FF6B00;}
-.ai-input::placeholder{color:#2a2a2a;}
-.ai-send{width:44px;height:44px;border-radius:12px;background:#FF6B00;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:opacity 0.15s,transform 0.1s;}
-.ai-send:active{opacity:0.8;transform:scale(0.95);}
-.ai-send:disabled{opacity:0.3;cursor:not-allowed;}
-.ai-send svg{width:18px;height:18px;stroke:#000;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
-</style>
-
-<div class="ai-panel" id="ai-panel">
-  <div class="ai-header">
-    <div class="ai-header-left">
-      <div class="ai-avatar">
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/></svg>
-      </div>
-      <div>
-        <div class="ai-title">JL Assistant</div>
-        <div class="ai-sub">POWERED BY CLAUDE</div>
-      </div>
-    </div>
-    <button class="ai-close" onclick="closeAI()">✕</button>
-  </div>
-  <div class="ai-messages" id="ai-messages"></div>
-  <div class="ai-suggestions">
-    <button class="ai-sug" onclick="useSug(this)">Jak zwiększyć dochody?</button>
-    <button class="ai-sug" onclick="useSug(this)">Pomysł na biznes</button>
-    <button class="ai-sug" onclick="useSug(this)">Jak pozyskać klientów?</button>
-    <button class="ai-sug" onclick="useSug(this)">Motywacja na dziś</button>
-    <button class="ai-sug" onclick="useSug(this)">Jak oszczędzać?</button>
-  </div>
-  <div class="ai-input-row">
-    <textarea class="ai-input" id="ai-input" placeholder="Napisz do asystenta..." rows="1"
-      onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendAI();}"></textarea>
-    <button class="ai-send" id="ai-send-btn" onclick="sendAI()">
-      <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-    </button>
-  </div>
-</div>
-
-<script>
-const AI_SYSTEM = `Jesteś osobistym asystentem biznesowym Jacka. Jacek jest przedsiębiorcą który prowadzi kilka biznesów: iPhone flipping, sprzedaż ebooków, high-ticket sales. Odpowiadaj krótko, konkretnie i po polsku. Jesteś pomocny, bezpośredni i motywujący. Mów do Jacka po imieniu.`;
-
-let aiHistory = [];
-let aiTyping = false;
-let aiGreeted = false;
-
-function openAI() {
-  document.getElementById('ai-panel').classList.add('open');
-  if(!aiGreeted) {
-    aiGreeted = true;
-    addBotMsg('Siema Jacek! 👋 Jestem Twoim asystentem. Mogę pomóc z biznesem, finansami, motywacją — pytaj o co chcesz!');
-  }
-  setTimeout(()=>document.getElementById('ai-input').focus(), 400);
-}
-
-function closeAI() {
-  document.getElementById('ai-panel').classList.remove('open');
-}
-
-function useSug(el) {
-  document.getElementById('ai-input').value = el.textContent;
-  sendAI();
-}
-
-function getTime() {
-  return new Date().toLocaleTimeString('pl-PL',{hour:'2-digit',minute:'2-digit'});
-}
-
-function escHtml(t) {
-  return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
-}
-
-function addUserMsg(text) {
-  const msgs = document.getElementById('ai-messages');
-  msgs.innerHTML += `<div class="ai-msg user"><div class="ai-bubble">${escHtml(text)}</div><div class="ai-msg-time">${getTime()}</div></div>`;
-  scrollAI();
-}
-
-function addBotMsg(text) {
-  const msgs = document.getElementById('ai-messages');
-  msgs.innerHTML += `<div class="ai-msg bot"><div class="ai-bubble">${escHtml(text)}</div><div class="ai-msg-time">${getTime()}</div></div>`;
-  scrollAI();
-}
-
-function showTyping() {
-  document.getElementById('ai-messages').innerHTML += `<div class="ai-msg bot" id="ai-typing-row"><div class="ai-typing"><span></span><span></span><span></span></div></div>`;
-  scrollAI();
-}
-
-function hideTyping() {
-  const t = document.getElementById('ai-typing-row');
-  if(t) t.remove();
-}
-
-function scrollAI() {
-  const msgs = document.getElementById('ai-messages');
-  setTimeout(()=>msgs.scrollTop=msgs.scrollHeight, 50);
-}
-
-async function sendAI() {
-  if(aiTyping) return;
-  const inp = document.getElementById('ai-input');
-  const text = inp.value.trim();
-  if(!text) return;
-  inp.value='';
-  inp.style.height='auto';
-
-  addUserMsg(text);
-  aiHistory.push({role:'user', content:text});
-  aiTyping = true;
-  document.getElementById('ai-send-btn').disabled = true;
-  showTyping();
-
-  const at = getAllTotals();
-  const mt = getMonthTotals(getCurMonth());
-  const ctx = `Dane Jacka: łączny dochód ${fmt(at.inc)} zł, wydatki ${fmt(at.exp)} zł, netto ${fmt(at.net)} zł. Ten miesiąc: in ${fmt(mt.inc)} zł, out ${fmt(mt.exp)} zł. Zadania: ${DB.tasks.filter(t=>t.status!=='done').length}. Klienci: ${DB.contacts.length}.`;
-
-  try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'anthropic-dangerous-direct-browser-access': 'true'
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        system: AI_SYSTEM + ' ' + ctx,
-        messages: aiHistory.slice(-10)
-      })
-    });
-    const data = await res.json();
-    hideTyping();
-    const reply = data.content?.[0]?.text || 'Przepraszam, spróbuj ponownie.';
-    aiHistory.push({role:'assistant', content:reply});
-    addBotMsg(reply);
-  } catch(e) {
-    hideTyping();
-    addBotMsg('Błąd połączenia. Sprawdź internet i spróbuj ponownie.');
-  }
-
-  aiTyping = false;
-  document.getElementById('ai-send-btn').disabled = false;
-}
-
-document.getElementById('ai-input').addEventListener('input', function(){
-  this.style.height='auto';
-  this.style.height=Math.min(this.scrollHeight,100)+'px';
-});
 </script>
 </body>
 </html>
