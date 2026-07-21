@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JL Fortress — Centrum dowodzenia</title>
+  <meta name="theme-color" content="#0e1526">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="JL Fortress">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230e1526'/%3E%3Cpath d='M15 21V11h7v4.5h6V11h8v4.5h6V11h7v10l-1 2v13q0 10-16 17-16-7-16-17V23Z' fill='%2316213b' stroke='%23d4a942' stroke-width='2.4' stroke-linejoin='round'/%3E%3Ctext x='32' y='41.5' text-anchor='middle' font-family='Georgia,serif' font-size='16.5' font-weight='bold' fill='%23d4a942'%3EJL%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="brand">
+      <svg class="brand-logo" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#f3d27a"/>
+            <stop offset="0.5" stop-color="#d4a942"/>
+            <stop offset="1" stop-color="#a97e22"/>
+          </linearGradient>
+        </defs>
+        <rect width="64" height="64" rx="14" fill="#0e1526"/>
+        <rect x="1.5" y="1.5" width="61" height="61" rx="12.5" fill="none" stroke="#24304d" stroke-width="1.5"/>
+        <!-- tarcza z blankami -->
+        <path d="M15 21 V11 h7 v4.5 h6 V11 h8 v4.5 h6 V11 h7 v10 l-1 2 v13 q0 10 -16 17 q-16 -7 -16 -17 V23 Z"
+              fill="#16213b" stroke="url(#gold)" stroke-width="2.4" stroke-linejoin="round"/>
+        <!-- wewnętrzna linia -->
+        <path d="M20 25 v11.5 q0 7 12 12.8 q12 -5.8 12 -12.8 V25"
+              fill="none" stroke="url(#gold)" stroke-width="1" opacity="0.55"/>
+        <text x="32" y="41.5" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif"
+              font-size="16.5" font-weight="bold" letter-spacing="0.5" fill="url(#gold)">JL</text>
+        <circle cx="32" cy="48.5" r="1.4" fill="url(#gold)"/>
+      </svg>
+      <div class="brand-text">
+        <span class="brand-name">JL Fortress</span>
+        <span class="brand-tag">Centrum dowodzenia</span>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <button class="nav-item active" data-section="dashboard">
+        <span class="nav-icon">◈</span> Pulpit
+      </button>
+      <button class="nav-item" data-section="businesses">
+        <span class="nav-icon">🏛</span> Moje biznesy
+      </button>
+      <button class="nav-item" data-section="finances">
+        <span class="nav-icon">💰</span> Finanse
+      </button>
+      <button class="nav-item" data-section="calendar">
+        <span class="nav-icon">📅</span> Kalendarz
+      </button>
+      <button class="nav-item" data-section="notes">
+        <span class="nav-icon">📝</span> Notatnik
+      </button>
+      <button class="nav-item" data-section="settings">
+        <span class="nav-icon">⚙️</span> Ustawienia
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div id="sync-status" class="sync-status"></div>
+      <span id="today-date"></span>
+    </div>
+  </aside>
+
+  <main class="main">
+    <!-- ============ PULPIT ============ -->
+    <section id="section-dashboard" class="section active">
+      <header class="section-header">
+        <h1>Pulpit</h1>
+        <p class="subtitle">Przegląd wszystkich Twoich biznesów w jednym miejscu</p>
+      </header>
+
+      <div class="stat-grid">
+        <div class="stat-card">
+          <span class="stat-label">Saldo łączne</span>
+          <span class="stat-value" id="stat-balance">0,00 zł</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Przychody (ten miesiąc)</span>
+          <span class="stat-value income" id="stat-income">0,00 zł</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Wydatki (ten miesiąc)</span>
+          <span class="stat-value expense" id="stat-expense">0,00 zł</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Aktywne biznesy</span>
+          <span class="stat-value" id="stat-businesses">0</span>
+        </div>
+      </div>
+
+      <div class="dash-columns">
+        <div class="panel">
+          <h2>Najbliższe wydarzenia</h2>
+          <div id="dash-events" class="dash-list"></div>
+        </div>
+        <div class="panel">
+          <h2>Ostatnie transakcje</h2>
+          <div id="dash-transactions" class="dash-list"></div>
+        </div>
+        <div class="panel">
+          <h2>Ostatnie notatki</h2>
+          <div id="dash-notes" class="dash-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ BIZNESY ============ -->
+    <section id="section-businesses" class="section">
+      <header class="section-header">
+        <h1>Moje biznesy</h1>
+        <button class="btn btn-gold" id="btn-add-business">+ Dodaj biznes</button>
+      </header>
+      <div id="business-grid" class="business-grid"></div>
+    </section>
+
+    <!-- ============ FINANSE ============ -->
+    <section id="section-finances" class="section">
+      <header class="section-header">
+        <h1>Finanse</h1>
+        <div class="header-controls">
+          <select id="finance-filter" class="select"></select>
+          <button class="btn btn-gold" id="btn-add-transaction">+ Dodaj transakcję</button>
+        </div>
+      </header>
+
+      <div class="panel">
+        <h2>Bilans miesięczny (ostatnie 6 miesięcy)</h2>
+        <div id="finance-chart" class="chart"></div>
+        <div class="chart-legend">
+          <span><i class="dot dot-income"></i> Przychody</span>
+          <span><i class="dot dot-expense"></i> Wydatki</span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Transakcje</h2>
+        <div class="table-scroll">
+          <table class="table">
+            <thead>
+              <tr><th>Data</th><th>Opis</th><th>Biznes</th><th>Kategoria</th><th class="right">Kwota</th><th></th></tr>
+            </thead>
+            <tbody id="transaction-rows"></tbody>
+          </table>
+        </div>
+        <p id="transactions-empty" class="empty-msg">Brak transakcji. Dodaj pierwszą przyciskiem powyżej.</p>
+      </div>
+    </section>
+
+    <!-- ============ KALENDARZ ============ -->
+    <section id="section-calendar" class="section">
+      <header class="section-header">
+        <h1>Kalendarz</h1>
+        <div class="header-controls">
+          <button class="btn" id="cal-prev">‹</button>
+          <span id="cal-title" class="cal-title"></span>
+          <button class="btn" id="cal-next">›</button>
+          <button class="btn btn-gold" id="btn-add-event">+ Dodaj wydarzenie</button>
+        </div>
+      </header>
+      <div class="calendar-wrap">
+        <div class="panel calendar-panel">
+          <div class="cal-weekdays">
+            <span>Pn</span><span>Wt</span><span>Śr</span><span>Cz</span><span>Pt</span><span>So</span><span>Nd</span>
+          </div>
+          <div id="cal-grid" class="cal-grid"></div>
+        </div>
+        <div class="panel">
+          <h2 id="day-events-title">Wydarzenia</h2>
+          <div id="day-events" class="dash-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ NOTATNIK ============ -->
+    <section id="section-notes" class="section">
+      <header class="section-header">
+        <h1>Notatnik</h1>
+        <button class="btn btn-gold" id="btn-add-note">+ Nowa notatka</button>
+      </header>
+      <div id="notes-grid" class="notes-grid"></div>
+      <p id="notes-empty" class="empty-msg">Brak notatek. Utwórz pierwszą przyciskiem powyżej.</p>
+    </section>
+    <!-- ============ USTAWIENIA ============ -->
+    <section id="section-settings" class="section">
+      <header class="section-header">
+        <h1>Ustawienia</h1>
+      </header>
+
+      <div class="panel">
+        <h2>Synchronizacja w chmurze (Supabase)</h2>
+        <p class="settings-help">
+          Dzięki synchronizacji te same dane zobaczysz na komputerze i telefonie.
+          Załóż darmowy projekt na <b>supabase.com</b>, w edytorze SQL uruchom skrypt
+          z pliku <code>supabase-schema.sql</code>, a potem wklej poniżej adres projektu
+          i klucz „anon public" (Settings → API).
+        </p>
+        <form id="sync-form" class="settings-form">
+          <label>Adres projektu (URL)
+            <input name="url" id="sync-url" placeholder="https://xxxx.supabase.co" autocomplete="off">
+          </label>
+          <label>Klucz anon public
+            <input name="key" id="sync-key" placeholder="eyJhbGciOi..." autocomplete="off">
+          </label>
+          <div class="settings-actions">
+            <button type="submit" class="btn btn-gold">Zapisz i połącz</button>
+            <button type="button" class="btn" id="btn-sync-now">Synchronizuj teraz</button>
+            <button type="button" class="btn btn-danger" id="btn-sync-off">Rozłącz</button>
+          </div>
+        </form>
+        <p id="sync-info" class="settings-help"></p>
+      </div>
+
+      <div class="panel">
+        <h2>Kopia zapasowa</h2>
+        <p class="settings-help">Zapisz wszystkie dane do pliku albo wczytaj je z wcześniejszej kopii.</p>
+        <div class="settings-actions">
+          <button class="btn btn-gold" id="btn-export">Pobierz kopię (JSON)</button>
+          <button class="btn" id="btn-import">Wczytaj kopię…</button>
+          <input type="file" id="import-file" accept="application/json" hidden>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Instalacja na telefonie</h2>
+        <p class="settings-help">
+          <b>iPhone (Safari):</b> otwórz aplikację, dotknij przycisku „Udostępnij", wybierz
+          „Dodaj do ekranu początkowego".<br>
+          <b>Android (Chrome):</b> otwórz aplikację, menu ⋮ → „Dodaj do ekranu głównego"
+          (lub baner „Zainstaluj aplikację").
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ MODAL ============ -->
+  <div id="modal-overlay" class="modal-overlay hidden">
+    <div class="modal">
+      <h2 id="modal-title"></h2>
+      <form id="modal-form"></form>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="app.js"></script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("sw.js").catch(() => {});
+    }
+  </script>
+</body>
+</html>
